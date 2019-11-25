@@ -2,3 +2,5 @@
 /tests/phpunit.phar
 /tests/.phpunit.result.cache
 /data/links.txt
+/.php_cs.cache
+/php-cs-fixer-v2.phar

@@ -4,46 +4,49 @@
  */
 namespace Navt;
 
-class Rave {
-    
+class Rave
+{
     private $input;
-    private $map = [];      // карта переходов от слова из исходного текста к 
-                           //следующему слову
+    private $map = [];      // карта переходов от слова из исходного текста к
+    //следующему слову
     private $mapSize = 0;
     private $mapKeys = [];
     private $ends = ["!",".","?"];
     
     public $minQW = 5;      // min количество слов в генерируемом предложении
-    public $maxQW = 12;     // max количество слов в генерируемом предложении 
+    public $maxQW = 12;     // max количество слов в генерируемом предложении
     public $qSentences = 8; // количество генерируемых предложений
     
     public $output;
     
     // источником может быть строка или файл
-    public function __construct($src="") {
+    public function __construct($src="")
+    {
         mb_internal_encoding("UTF-8");
-        if ($src !== ""){
-           $this->load($src); 
+        if ($src !== "") {
+            $this->load($src);
         } else {
             throw new RaveException(__METHOD__."Так создать объект нельзя.");
         }
     }
     
-    private function load($src) {
-        if (is_readable($src)){
-           $this->input = file_get_contents($src);
-           return;
+    private function load($src)
+    {
+        if (is_readable($src)) {
+            $this->input = file_get_contents($src);
+            return;
         }
         $this->input = $src;
     }
     // очистка стоки от "лишних" символов
-    public function clean() {
+    public function clean()
+    {
         // удаляем переносы строк
         $this->input = str_replace(["\n", "\r", "\t"], " ", $this->input);
         // оставляем только допустимые символы
         $this->input = preg_replace('~[^a-zёа-я0-9\s-!\?\.\,\:]~ui', "", $this->input);
         // дубли точек и многоточия
-        $this->input = preg_replace('~(\.{2,})~u','.',$this->input); 
+        $this->input = preg_replace('~(\.{2,})~u', '.', $this->input);
         // удаляем последовательности из 2-х и более пробелов
         $this->input = preg_replace("~(\s{2,})~u", " ", $this->input);
         //
@@ -51,7 +54,8 @@ class Rave {
         return $this;
     }
     // постоение карты
-    public function buildMap() {
+    public function buildMap()
+    {
         $words = explode(" ", $this->input);
         $qWords = count($words);
         $words[-1] = "Старт!";
@@ -72,8 +76,9 @@ class Rave {
         $this->mapSize = count($this->map);
         $this->mapKeys = array_keys($this->map);
     }
-    // определение имен собственных 
-    private function isOwn($early,$word) {
+    // определение имен собственных
+    private function isOwn($early, $word)
+    {
         // Слово начинается с заглавной буквы?
         if (preg_match("~[A-ZА-ЯЁ]~", $word)) {
             // Если в предыдущем слове закончилось предложение исходного текста
@@ -84,18 +89,20 @@ class Rave {
         return $word;
     }
     // имеется ли в строке подстрока из массива $units
-    private function isInString($str, $units=[]) {
+    private function isInString($str, $units=[])
+    {
         foreach ($units as $unit) {
-            if (mb_strpos($str,$unit) !== false) {
+            if (mb_strpos($str, $unit) !== false) {
                 return true;
             }
         }
         return false;
     }
     
-    // getGistogram() возвращает массив: ключи - количесво слов в предложении, 
+    // getGistogram() возвращает массив: ключи - количесво слов в предложении,
     // значения - количество таких предложений в тексте
-    public function getGistogram() {
+    public function getGistogram()
+    {
         $str = preg_replace(["~\.~", "~\!~", "~\?~"], "~", $this->input);
         $sentences = explode("~", $str);
         $gistogram = [];
@@ -113,7 +120,8 @@ class Rave {
         return $gistogram;
     }
     
-    public function generate() {
+    public function generate()
+    {
         if (empty($this->map)) {
             throw new RaveException(__METHOD__."Без карты генерация не работает.");
         }
@@ -129,7 +137,7 @@ class Rave {
             for ($ii = 1; $ii < $qw; $ii++) {
                 $word = $this->findWord($early);
                 if ($this->isInString($word, $this->ends) && $ii < $qw-1) {
-                    $sentence[$ii] = str_replace($this->ends, "", $word); 
+                    $sentence[$ii] = str_replace($this->ends, "", $word);
                 } else {
                     $sentence[$ii] = $word;
                 }
@@ -150,12 +158,13 @@ class Rave {
         $this->output = implode(" ", $sentences);
     }
     // убираем в конце предложения слова корче $limit символов
-    private function removeShort($sentence=[], $limit=3) {
+    private function removeShort($sentence=[], $limit=3)
+    {
         if (is_array($sentence) && count($sentence) > 0) {
             while (mb_strlen($sentence[count($sentence)-1]) < $limit) {
                 unset($sentence[count($sentence)-1]);
                 if ($sentence == []) {
-                    return $sentence; 
+                    return $sentence;
                 }
             }
             return $sentence;
@@ -164,7 +173,8 @@ class Rave {
         }
     }
     // поиск слова для предложения
-    private function findWord($early) {
+    private function findWord($early)
+    {
         // если это первое слово в предложении или новая генерация случайного слова
         if ($early === "") {
             $i = mt_rand(0, $this->mapSize-1);
@@ -185,27 +195,31 @@ class Rave {
             } else {
                 throw new RaveException(__METHOD__." Для ключа $early в карте нет массива ");
             }
-        }   
+        }
     }
     
-    private function mb_ucfirst($str) {
+    private function mb_ucfirst($str)
+    {
         $fc = mb_strtoupper(mb_substr($str, 0, 1));
         return $fc.mb_substr($str, 1);
     }
     
         
-    public function getVar($name) {
+    public function getVar($name)
+    {
         return $this->$name;
     }
     
-    public function printString($str="", $limit=10) {
+    public function printString($str="", $limit=10)
+    {
         $words = explode(" ", $str);
         $qw = count($words);
-        $i = 0; $j = 0;
+        $i = 0;
+        $j = 0;
         while ($i < $qw) {
             $line[] = $words[$i];
-            ++$i; 
-            ++$j; 
+            ++$i;
+            ++$j;
             if ($j === $limit || $i === $qw) {
                 $j = 0;
                 $l = implode(" ", $line)."\r\n";
@@ -215,4 +229,6 @@ class Rave {
         }
     }
 }
-class RaveException extends \Exception {}
+class RaveException extends \Exception
+{
+}
