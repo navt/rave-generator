@@ -1,0 +1,4 @@
+/nbproject/*
+/tests/phpunit.phar
+/tests/.phpunit.result.cache
+/data/links.txt
