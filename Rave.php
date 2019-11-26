@@ -8,7 +8,7 @@ class Rave
 {
     private $input;
     private $map = [];      // карта переходов от слова из исходного текста к
-    //следующему слову
+                           //следующему слову
     private $mapSize = 0;
     private $mapKeys = [];
     private $ends = ["!",".","?"];

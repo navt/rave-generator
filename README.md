@@ -1,34 +1,18 @@
 # rave-generator
-Генератор текста на основе цепей Маркова.<br>
-Простым языком: предполагается, что все слова какого-то конкретного текста - случайные 
-величины. И если известно текущее слово, то следущее слово может быть сгенерировано из 
-определённого ограниченного набора слов. Каждое слово из такого набора обладает какой-то 
-вероятностью выпадения, а сумма вероятностей выпадения всех слов набора 1. Таким образом,
-зная текущее слово мы "бросаем кость" и случайным образом выбираем следущее из набора. 
-И так далее. Это самый примитивный случай цепей Маркова.<br>
-Суть алгоритма сводится к построению из имеющегося текста карты всех слов текста и
-соответствующих этим словам наборам продолжений. Из такой карты случайным образом
-и генерируется лишённый смысла текст(бред).<br>
-Реализаций цепей Маркова только на github.com несколько тысяч в основном на python, 
-но мне нужен был PHP-класс "заточенный" под мои задачи: гибким выбором источника текста, 
-выбором диапазона слов в предложении и количества предложений.<br> 
-Класс предназначался для генерации тестового материала. Опробовался только на текстах 
-на русском языке.<br>
-Пример использования класса в файле sg.php.<br>
-Пример текста, лишённого смысла, на основе файла data/zelazny.txt<br>
-
-```
-Массу удовольствия при помощи сейсмической томографии обнаружило на самых разнообразных
-условиях из впечатляющего образа - антиконтиненты. Работе, моей жизни а
-вот и мало кто пишет прозу, - на самых разнообразных
-условиях из вас, кто пишет прозу. Хриплые звуки что, выставив
-эти образы на ядре перевернутые аналоги того, чтобы они портят.
-Произвести на каждое, продолжая нормально жить в романы явившись мне
-это. Эти образы - для меня понимаете хочется уничтожить его,
-изгнать его вносящие смуту. Вы меня к различным вещам. Гаснуть,
-и ждут затем появляются и мало времени спасибо. Каждое, продолжая
-нормально жить в фантастику часто воздействуют почти магически. Других героев
-так продолжалось до тех пор мне удовольствие герои некоторых моих
-рассказов, такие, как сверхскоростное шоссе в самых. Представляемое как компьютерный
-вирус в самом.
-```
+Text generator based on Markov chains.<br>
+In simple language: it is assumed that all the words of a particular text are 
+random variables. And if the current word is known, then the next word can be 
+generated from a certain limited set of words. Each word from such a set has some 
+probability of falling out, and the sum of the probabilities of falling out of 
+all the words of set 1. Thus, knowing the current word, we “roll the dice” and 
+randomly select the next one from the set. And so on. This is the most primitive 
+case of Markov chains.<br>
+The essence of the algorithm is to build from the available text a map of all words 
+of the text and sets of continuations corresponding to these words. From such a 
+card, random text (nonsense) is randomly generated.<br>
+There are several thousand implementations of Markov chains for different situations 
+only on github.com, mostly in python, but I needed a PHP class “tailored” for my 
+tasks: flexible selection of the source of the text, choice of the range of words 
+in the sentence and the number of sentences.<br>
+The class was intended to generate test material. Tested only on texts in Russian.
+An example of using the class in `sg.php`.
